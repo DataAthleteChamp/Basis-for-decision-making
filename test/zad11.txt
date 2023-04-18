@@ -1,0 +1,35 @@
+int p = 3; //obiekty do rozmieszczenia
+int c = 25; //maksymalna kwota
+range Locations = 1..5;
+range ReferencePoints = 1..6;
+
+float Lx[Locations] = [3, 1, 7, 6, 8];
+float Ly[Locations] = [2, 5, 3, 9, 6];
+
+float Rx[ReferencePoints] = [2, 5, 6, 8, 1, 7];
+float Ry[ReferencePoints] = [4, 1, 8, 4, 7, 2];
+
+float costs[Locations] = [10, 6, 7, 12, 8];
+
+dvar boolean x[Locations];
+dvar boolean y[Locations][ReferencePoints];
+
+minimize sum(i in Locations, j in ReferencePoints) y[i][j] * sqrt(pow(Lx[i] - Rx[j], 2) + pow(Ly[i] - Ry[j], 2));
+//mninimalizacja iloczynu odl.
+
+subject to {
+  
+  //jeden punkt referencyjny mozna przypisac tylko do jednej lokalizacji
+  forall(j in ReferencePoints)
+    sum(i in Locations) y[i][j] == 1;
+  
+  //maksymalna kwota wydana na wybrane lokalizacje
+  sum(i in Locations) x[i] * costs[i] <= c;
+  
+  //aby wybrac punkt musi byc lokalizacja najpierw
+  forall(i in Locations, j in ReferencePoints)
+    y[i][j] <= x[i];
+
+  // Liczba wybranych lokalizacji równa p
+ //sum(i in Locations) x[i] == p;
+}
