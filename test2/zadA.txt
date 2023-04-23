@@ -1,0 +1,19 @@
+int n = 4; // Liczba zadań
+range Jobs = 1..n;
+int p[Jobs] = [5, 3, 6, 4]; // Wektor czasów realizacji zadań
+int k[Jobs] = [10, 8, 14, 12]; // Wektor zawierający najpóźniejsze możliwe terminy zakończenia zadań
+
+dvar int+ start[Jobs]; // Początkowe czasy zadań
+dvar int+ delay[Jobs]; // Różnice między rzeczywistym terminem zakończenia zadania a jego najpóźniejszym możliwym terminem zakończenia
+
+minimize sum(j in Jobs) (delay[j]);
+
+subject to {
+    forall(j in Jobs) {
+        
+        start[j] + p[j] - k[j] <= delay[j]; // Obliczenie różnicy między rzeczywistym terminem zakończenia zadania a jego najpóźniejszym możliwym terminem zakończenia
+    }
+
+    forall(j1 in Jobs, j2 in Jobs : j1 != j2)
+        start[j1] + p[j1] <= start[j2] || start[j2] + p[j2] <= start[j1]; // Ograniczenie zapewniające, że zadania nie są wykonywane równocześnie
+}
