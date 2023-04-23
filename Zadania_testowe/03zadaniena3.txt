@@ -1,0 +1,27 @@
+// Parametry wejściowe:
+int n = 3; // Liczba plecaków
+range Knapsacks = 1..n;
+int Z[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Zbiór liczb całkowitych Z
+
+// Pojemności plecaków:
+int capacities[Knapsacks] = [10, 12, 15];
+
+// Mnożniki wartości:
+int multipliers[Knapsacks] = [3, 2, 1];
+
+// Zmienne decyzyjne:
+dvar int+ x[Knapsacks][Z] in 0..1; // Wybór liczby do umieszczenia w plecaku
+
+// Funkcja celu: minimalizacja sumy liczb, które nie zostały umieszczone w plecakach
+minimize sum(z in Z) (1 - sum(k in Knapsacks) x[k][z]) * z;
+
+// Ograniczenia:
+subject to {
+  // Ograniczenia pojemności plecaków:
+  forall(k in Knapsacks)
+    sum(z in Z) x[k][z] * z * multipliers[k] <= capacities[k];
+
+  // Każda liczba może zostać umieszczona w co najwyżej jednym plecaku:
+  forall(z in Z)
+    sum(k in Knapsacks) x[k][z] <= 1;
+}

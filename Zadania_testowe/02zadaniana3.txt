@@ -1,0 +1,51 @@
+// Parametry wejściowe:
+int p = 3; // Liczba obiektów do rozmieszczenia
+int L = 5; // Liczba lokalizacji
+int K = 4; // Liczba punktów referencyjnych
+int v = 15; // Maksymalna kwota, którą można wydać na wybrane lokalizacje
+range Locations = 1..L;
+range ReferencePoints = 1..K;
+
+// Przykładowe wartości współrzędnych lokalizacji i punktów referencyjnych:
+tuple coord {
+  int x;
+  int y;
+}
+
+coord locationCoordinates[Locations] = [
+  <1, 1>,
+  <2, 2>,
+  <3, 3>,
+  <4, 4>,
+  <5, 5>
+];
+
+coord referencePointCoordinates[ReferencePoints] = [
+  <1, 5>,
+  <2, 4>,
+  <3, 3>,
+  <4, 2>
+];
+
+// Przykładowe wartości kosztów wyboru lokalizacji:
+int costs[Locations] = [4, 5, 6, 7, 8];
+
+// Zmienne decyzyjne:
+dvar boolean x[Locations]; // Wybór lokalizacji
+dvar float+ d[Locations][ReferencePoints]; // Odległości pomiędzy lokalizacjami i punktami referencyjnymi
+
+// Funkcja celu: minimalizacja sumy odległości między wybranymi lokalizacjami a najbliższymi punktami referencyjnymi
+minimize sum(l in Locations, r in ReferencePoints) x[l] * d[l][r];
+
+// Ograniczenia:
+subject to {
+  // Suma kosztów wybranych lokalizacji nie może przekraczać maksymalnej kwoty v
+  sum(l in Locations) x[l] * costs[l] <= v;
+
+  // Wybrać dokładnie p lokalizacji
+  sum(l in Locations) x[l] == p;
+
+  // Obliczenie odległości euklidesowej między lokalizacjami i punktami referencyjnymi
+  forall(l in Locations, r in ReferencePoints)
+    d[l][r] >= sqrt(pow(locationCoordinates[l].x - referencePointCoordinates[r].x, 2) + pow(locationCoordinates[l].y - referencePointCoordinates[r].y, 2));
+}
