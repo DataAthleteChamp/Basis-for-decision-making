@@ -7,3 +7,5 @@
 
 [test](/test/11.pdf)
 [test2](/test2/9.pdf)
+
+[PROJECT](/PROJECT-F1_strategy/sprawozdanie/Piotrowski_Jakub_F1-Projekt.pdf)
